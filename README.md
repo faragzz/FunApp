@@ -67,28 +67,6 @@ DB_PASSWORD=password
 DB_NAME=mydatabase
 ```
 
-## Deployment
-
-To deploy your NestJS application:
-
-```bash
-# Install NestJS deployment CLI
-$ pnpm install -g mau
-
-# Deploy with Mau (AWS-based hosting for NestJS apps)
-$ mau deploy
-```
-
-Alternatively, you can deploy using Docker:
-
-```bash
-# Build Docker image
-$ docker build -t nestjs-app .
-
-# Run the container
-$ docker run -p 3000:3000 nestjs-app
-```
-
 ## Useful Resources
 
 - [NestJS Documentation](https://docs.nestjs.com)

@@ -50,7 +50,7 @@ $ pnpm run start:prod
 After running the application, you can access the API documentation at:
 
 ```
-http://localhost:3000/api
+http://localhost:3000/api/docs#/
 ```
 
 ## Running Tests

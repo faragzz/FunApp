@@ -7,14 +7,14 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-    constructor( @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
+    constructor(@Inject(forwardRef(() => UsersService)) private usersService: UsersService,
                 private jwtService: JwtService,
-                private configService:ConfigService ) {
+                private configService: ConfigService) {
     }
 
-    generateAccessToken(user: User) {
+    generateAccessToken(id: number, name: string) {
         return this.jwtService.sign(
-            {sub: user.id, name: user.name},
+            {sub: id, name: name},
             {
                 secret: this.configService.get('JWT_SECRET'),
                 expiresIn: '15m',
@@ -22,15 +22,16 @@ export class AuthService {
         );
     }
 
-    generateRefreshToken(user: User) {
+    generateRefreshToken(id: number) {
         return this.jwtService.sign(
-            {sub: user.id},
+            {sub: id},
             {
                 secret: this.configService.get('JWT_REFRESH_SECRET'),
                 expiresIn: '7d',
             },
         );
     }
+
     async updateRefreshToken(id: number, refreshToken: string) {
         const hashedToken = await bcrypt.hash(refreshToken, 10);
         await this.usersService.updateRefreshToken(id, hashedToken);
@@ -47,12 +48,12 @@ export class AuthService {
                 throw new UnauthorizedException('Invalid refresh token');
             }
 
-            const accessToken = this.generateAccessToken(user);
-            const newRefreshToken = this.generateRefreshToken(user);
+            const accessToken = this.generateAccessToken(user.id, user.name);
+            const newRefreshToken = this.generateRefreshToken(user.id);
 
             await this.usersService.updateRefreshToken(user.id, newRefreshToken);
 
-            return { access_token: accessToken, refresh_token: newRefreshToken };
+            return {access_token: accessToken, refresh_token: newRefreshToken};
         } catch (err) {
             throw new UnauthorizedException('Invalid or expired refresh token');
         }

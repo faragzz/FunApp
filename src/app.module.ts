@@ -5,6 +5,7 @@ import {AuthModule} from './auth/auth.module';
 import {UsersModule} from './users/users.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
+import { GeolocationModule } from './geolocation/geolocation.module';
 
 @Module({
     imports: [ConfigModule.forRoot({isGlobal: true}),
@@ -17,7 +18,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
             database: 'db',
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             synchronize: true,
-        }), AuthModule, UsersModule],
+        }), AuthModule, UsersModule, GeolocationModule],
     controllers: [AppController],
     providers: [AppService],
 })

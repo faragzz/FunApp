@@ -7,37 +7,54 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-    constructor(@Inject(forwardRef(() => UsersService)) private usersService: UsersService,
-                private jwtService: JwtService,
-                private configService: ConfigService) {
+    constructor(
+        @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
+        private jwtService: JwtService,
+        private configService: ConfigService
+    ) {
     }
 
-    generateAccessToken(id: number, name: string) {
+    /**
+     * Generates an access token for a user.
+     *
+     * @param {number} id - The user ID.
+     * @param {string} name - The user's name.
+     * @returns {string} The generated JWT access token.
+     */
+    generateAccessToken(id: number, name: string): string {
         return this.jwtService.sign(
             {sub: id, name: name},
             {
                 secret: this.configService.get('JWT_SECRET'),
                 expiresIn: '15m',
-            },
+            }
         );
     }
 
-    generateRefreshToken(id: number) {
+    /**
+     * Generates a refresh token for a user.
+     *
+     * @param {number} id - The user ID.
+     * @returns {string} The generated JWT refresh token.
+     */
+    generateRefreshToken(id: number): string {
         return this.jwtService.sign(
             {sub: id},
             {
                 secret: this.configService.get('JWT_REFRESH_SECRET'),
                 expiresIn: '7d',
-            },
+            }
         );
     }
 
-    async updateRefreshToken(id: number, refreshToken: string) {
-        const hashedToken = await bcrypt.hash(refreshToken, 10);
-        await this.usersService.updateRefreshToken(id, hashedToken);
-    }
-
-    async refreshTokens(refreshToken: string) {
+    /**
+     * Refreshes access and refresh tokens using a valid refresh token.
+     *
+     * @param {string} refreshToken - The current refresh token.
+     * @returns {Promise<{ access_token: string, refresh_token: string }>} New access and refresh tokens.
+     * @throws {UnauthorizedException} If the refresh token is invalid or expired.
+     */
+    async refreshTokens(refreshToken: string): Promise<{ access_token: string, refresh_token: string }> {
         try {
             const decoded = this.jwtService.verify(refreshToken, {
                 secret: this.configService.get('JWT_REFRESH_SECRET'),

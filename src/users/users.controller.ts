@@ -5,7 +5,7 @@ import { Public } from "../guards/guards";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from "./schema/user.entity";
 
-@ApiTags('Users') // Groups endpoints under "Users" in Swagger
+@ApiTags('Users')
 @Controller('user')
 export class UsersController {
     constructor(private userService: UsersService) {}

@@ -1,7 +1,9 @@
-type UserResponseData = {
+type UserData = {
     name: string,
     email: string,
-    city: string
+    city: string,
+    accessToken?: string
+    refreshToken?: string
 }
-export {UserResponseData}
+export {UserData}
 

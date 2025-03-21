@@ -13,7 +13,7 @@ export class UsersController {
     }
 
     @Get(':user_id')
-    getUserProfile(@Param('user_id') userId: string) {
+    getUserProfile(@Param('user_id') userId: number) {
         return this.userService.findOne(userId);
     }
 }

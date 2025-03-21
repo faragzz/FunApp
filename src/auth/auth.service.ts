@@ -1,18 +1,20 @@
-import {Injectable} from '@nestjs/common';
+import {forwardRef, Inject, Injectable, UnauthorizedException} from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
 import {UsersService} from "../users/users.service";
 import {ConfigService} from "@nestjs/config";
+import {User} from "../users/schema/user.entity";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService,
+    constructor( @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
                 private jwtService: JwtService,
                 private configService:ConfigService ) {
     }
 
-    private generateAccessToken(user: any) {
+    generateAccessToken(user: User) {
         return this.jwtService.sign(
-            {sub: user.id, username: user.username},
+            {sub: user.id, name: user.name},
             {
                 secret: this.configService.get('JWT_SECRET'),
                 expiresIn: '15m',
@@ -20,7 +22,7 @@ export class AuthService {
         );
     }
 
-    private generateRefreshToken(user: any) {
+    generateRefreshToken(user: User) {
         return this.jwtService.sign(
             {sub: user.id},
             {
@@ -28,5 +30,31 @@ export class AuthService {
                 expiresIn: '7d',
             },
         );
+    }
+    async updateRefreshToken(id: number, refreshToken: string) {
+        const hashedToken = await bcrypt.hash(refreshToken, 10);
+        await this.usersService.updateRefreshToken(id, hashedToken);
+    }
+
+    async refreshTokens(refreshToken: string) {
+        try {
+            const decoded = this.jwtService.verify(refreshToken, {
+                secret: this.configService.get('JWT_REFRESH_SECRET'),
+            });
+
+            const user = await this.usersService.findOne(decoded.sub);
+            if (!user || user.refreshToken !== refreshToken) {
+                throw new UnauthorizedException('Invalid refresh token');
+            }
+
+            const accessToken = this.generateAccessToken(user);
+            const newRefreshToken = this.generateRefreshToken(user);
+
+            await this.usersService.updateRefreshToken(user.id, newRefreshToken);
+
+            return { access_token: accessToken, refresh_token: newRefreshToken };
+        } catch (err) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
     }
 }

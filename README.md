@@ -53,22 +53,6 @@ After running the application, you can access the API documentation at:
 http://localhost:3000/api/docs#/
 ```
 
-## Running Tests
-
-```bash
-# Run all tests
-$ pnpm run test
-
-# Run unit tests
-$ pnpm run test:unit
-
-# Run e2e tests
-$ pnpm run test:e2e
-
-# Test coverage
-$ pnpm run test:cov
-```
-
 ## Environment Variables
 
 Create a `.env` file in the root directory and configure the following:

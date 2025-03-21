@@ -54,7 +54,7 @@ export class AuthService {
      * @returns {Promise<{ access_token: string, refresh_token: string }>} New access and refresh tokens.
      * @throws {UnauthorizedException} If the refresh token is invalid or expired.
      */
-    async refreshTokens(refreshToken: string): Promise<{ access_token: string, refresh_token: string }> {
+    async updateRefreshTokens(refreshToken: string): Promise<{ access_token: string, refresh_token: string }> {
         try {
             const decoded = this.jwtService.verify(refreshToken, {
                 secret: this.configService.get('JWT_REFRESH_SECRET'),

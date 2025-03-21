@@ -50,7 +50,7 @@ export class UsersService {
      * @returns {Promise<any>} The saved user with an access token or an error message.
      * @throws {UnauthorizedException} If the user already exists or is not in Egypt.
      */
-    async signup(user: UserDto) {
+    async signUp(user: UserDto) {
         const geoDetails: GeoDetailsResponse = await this.geoLocationService.getCityAndCountry(user.latitude, user.longitude);
 
         if (geoDetails.country !== "Egypt") {

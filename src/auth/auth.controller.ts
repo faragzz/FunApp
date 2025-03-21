@@ -1,13 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from "./auth.service";
-import { Public } from "../guards/guards";
-import { UpdateRefreshTokenDto } from "./dto/auth.dto";
-import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
+import {Body, Controller, Post} from '@nestjs/common';
+import {AuthService} from "./auth.service";
+import {Public} from "../guards/guards";
+import {UpdateRefreshTokenDto} from "./dto/auth.dto";
+import {ApiOperation, ApiResponse, ApiTags, ApiBody} from '@nestjs/swagger';
 
-@ApiTags('Authentication') // Groups this under "Authentication" in Swagger
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) {
+    }
 
     /**
      * Refresh access and refresh tokens using a valid refresh token.
@@ -17,7 +18,7 @@ export class AuthController {
      */
     @Public()
     @Post('refresh')
-    @ApiOperation({ summary: 'Refresh Access & Refresh Token' })
+    @ApiOperation({summary: 'Refresh Access & Refresh Token'})
     @ApiResponse({
         status: 200,
         description: 'New access and refresh tokens generated successfully',
@@ -28,17 +29,16 @@ export class AuthController {
             }
         }
     })
-    @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+    @ApiResponse({status: 401, description: 'Invalid or expired refresh token'})
     @ApiBody({
         description: 'Provide the refresh token to get new tokens',
         schema: {
             example: {
-                refreshToken: 'eyJhGcfjerwhkfheirugerjgerkjGjkfjweH9...'
+                refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
             }
         }
     })
     updateRefreshToken(@Body() body: UpdateRefreshTokenDto): Promise<{ access_token: string, refresh_token: string }> {
-        return this.authService.refreshTokens(body.refreshToken);
+        return this.authService.updateRefreshTokens(body.refreshToken);
     }
 }
-

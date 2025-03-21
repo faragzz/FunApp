@@ -60,11 +60,11 @@ Create a `.env` file in the root directory and configure the following:
 ```env
 JWT_SECRET=hfjkwergk@t732vj78yr2kblEIO@e23$esdklklhl8
 JWT_REFRESH_SECRET=fwefhwejfhwlj21312fkl214lfe34jk@hfjerh
-DB_HOST=db
-DB_PORT=5432
+DB_HOST=localhost
 DB_USERNAME=postgres
 DB_PASSWORD=password
-DB_NAME=mydatabase
+DB_NAME=db
+DB_USER=user
 ```
 
 ## Useful Resources

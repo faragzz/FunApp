@@ -107,5 +107,3 @@ DB_USER=user
 This project is licensed under the [MIT License](https://github.com/nestjs/nest/blob/master/LICENSE).  
 
 ---
-
-Now your README includes a check to ensure Docker is running before starting the application. 🚀
